@@ -1,4 +1,4 @@
-const Post = require('../models/post')
+const Post = require('../models/postModel')
 
 const createPost = async(req, res)=>{
     const {title, userId} = req.body
