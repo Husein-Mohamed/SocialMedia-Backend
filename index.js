@@ -1,26 +1,22 @@
-const express = require('express')
 require('express-async-errors')
-const morgan = require('morgan')
 require('dotenv').config()
-const app = express()
-
-//database 
 require('./database/db')
 
-//routes
+const express = require('express')
+const morgan = require('morgan')
+
 const userRouter = require('./routes/userRoute')
 const postRouter = require('./routes/postRoute')
 const commentRouter = require('./routes/commentRoute')
 const reviewRouter = require('./routes/reviewRoute')
 
-//port
 const port = process.env.PORT
+const app = express()
 
-//middleware
 app.use(express.json())
+app.use(express.urlencoded())
 app.use(morgan('dev'))
 
-//routers
 app.use('/user', userRouter)
 app.use('/post', postRouter)
 app.use('/comment', commentRouter)
