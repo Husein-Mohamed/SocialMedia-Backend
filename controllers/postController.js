@@ -9,7 +9,7 @@ const createPost = async(req, res)=>{
 
 const getAllPosts = async(req, res)=>{
     const post = await Post.find({})
-    req.send(post)
+    res.send(post)
 }
 
 const getPostById = async(req, res)=>{
