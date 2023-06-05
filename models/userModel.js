@@ -7,16 +7,16 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
   userName: {
     type: String,
-    requird: true,
+    require: true,
   },
   email: {
     type: String,
-    requird: true,
+    require: true,
     unique: true,
   },
   password: {
     type: String,
-    requird: true,
+    require: true,
     selected: false,
   },
   profilePicture: {

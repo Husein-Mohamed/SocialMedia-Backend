@@ -9,6 +9,7 @@ const register = async (req, res, next) => {
   var token = jwt.sign({ id: user._id }, process.env.SECRET_KEY_JWT);
   res.send({ user, token: token });
 };
+
 const login = async (req, res, next) => {
   const { email, password } = req.body;
   let user = await User.findOne({ email }).select(+"password");
@@ -16,7 +17,7 @@ const login = async (req, res, next) => {
   let passMatch = await bcrypt.compare(password, user.password);
   if (!passMatch) return next(new AppError("credentials error ", 404));
   var token = jwt.sign({ id: user._id }, process.env.SECRET_KEY_JWT);
-  res.send({ token: token });
+  res.send({ user, token: token });
 };
 
 const updateUser = async (req, res, next) => {
@@ -30,6 +31,7 @@ const updateUser = async (req, res, next) => {
   );
   res.send(newUser);
 };
+
 const getAllUsers =async (req, res, next) => {
   if (!req.Admin)
   return next (new AppError("You are not Admin", 404) );
@@ -38,7 +40,7 @@ const getAllUsers =async (req, res, next) => {
 };
 
 const deleteUser = async (req, res, next) => {
- const user = req.user;
+  const user = req.user;
   await User.findByIdAndDelete({_id:user._id})
   res.send('User deleted Successfully !!')
 };
