@@ -1,7 +1,9 @@
 const bcrypt = require("bcrypt");
 const mongoose = require("mongoose");
-const { Schema } = mongoose;
 
+require("mongoose-type-url");
+
+const { Schema } = mongoose;
 const userSchema = new Schema({
   userName: {
     type: String,
@@ -18,7 +20,7 @@ const userSchema = new Schema({
     selected: false,
   },
   profilePicture: {
-    type: String,
+    type: mongoose.SchemaTypes.Url,
   },
   role: {
     type: String,
@@ -27,9 +29,18 @@ const userSchema = new Schema({
   },
 });
 
-userSchema.pre("save",async function() {
-  if (this.isModified('password'))
-    this.password = await bcrypt.hash(this.password , 11)
+userSchema.pre("findOneAndUpdate", async function () {
+  const modifiedField = this.getUpdate();
+  if (modifiedField.$set.password)
+    modifiedField.$set.password = await bcrypt.hash(
+      modifiedField.$set.password,
+      11
+    );
+});
+
+userSchema.pre("save", async function () {
+  if (this.isModified("password"))
+    this.password = await bcrypt.hash(this.password, 11);
 });
 
 const User = mongoose.model("User", userSchema);
