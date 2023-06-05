@@ -2,6 +2,7 @@ require('express-async-errors')
 require('dotenv').config()
 require('./database/db')
 
+var multer = require('multer');
 const express = require('express')
 const morgan = require('morgan')
 
