@@ -3,7 +3,7 @@ const {createComment, updateComment, deleteComment} = require('../controllers/co
 const router = express.Router();
 
 router.post('/', createComment)
-router.delete('/:id', updateComment)
-router.patch('/:id', deleteComment)
+router.patch('/:id', updateComment)
+router.delete('/:id', deleteComment)
 
 module.exports = router
