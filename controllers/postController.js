@@ -27,4 +27,9 @@ const deletePostById = async(req, res)=>{
     res.send('Post deleted Successfully !!')
 }
 
-module.exports = {createPost, getAllPosts, getPostById, updatePostById, deletePostById}
+const deleteAllPosts = async(req, res)=>{
+    await Post.deleteMany({})
+    res.send('All Posts of You Deleted Successfully !')
+}
+
+module.exports = {createPost, getAllPosts, getPostById, updatePostById, deletePostById, deleteAllPosts}
