@@ -15,6 +15,12 @@ const createPost = async (req, res, next) => {
 };
 
 const getAllPosts = async (req, res, next) => {
+  const post = await Post.find({});
+  if (!post) return next(new AppError("no posts found", 404));
+  res.send(post);
+};
+
+const getUserPosts = async (req, res, next) => {
   if (req.Admin) return next(new AppError("admin can't get post", 500));
   const userID = req.user._id;
   if (!userID) return next(new AppError("please login to show posts", 404));
@@ -29,14 +35,16 @@ const getPostById = async (req, res, next) => {
 };
 
 const updatePostById = async (req, res, next) => {
-  if (req.Admin) return next(new AppError("admin can't update post", 500));
+  if (req.Admin) return next(new AppError("admin can't update post", 403));
   const userID = req.user._id;
+  if (!userID) return next(new AppError("please login to update posts", 403));
   const post = await Post.findById({ _id: req.params.id });
+  if (!post) return next(new AppError("post not found", 404));
   if (!(JSON.stringify(post.userId) === JSON.stringify(userID)))
     return next(
       new AppError("you don't have permission to update this post", 404)
     );
-  await Post.updateOne({ _id: req.params.id }, req.body);
+  await Post.updateOne({ _id: req.params.id }, { $set: req.body });
   res.send(post);
 };
 
@@ -51,10 +59,15 @@ const deletePostById = async (req, res, next) => {
   res.send("Post deleted Successfully !!");
 };
 
-const deleteAllPosts = async (req, res) => {
+const deleteUserPosts = async (req, res, next) => {
   const userID = req.user._id;
   if (!userID) return next(new AppError("please login to delete posts", 404));
   await Post.deleteMany({ userId: userID });
+  res.send("All Posts of You Deleted Successfully !");
+};
+
+const deleteAllPosts = async (req, res, next) => {
+  await Post.deleteMany({});
   res.send("All Posts of You Deleted Successfully !");
 };
 
@@ -65,4 +78,6 @@ module.exports = {
   updatePostById,
   deletePostById,
   deleteAllPosts,
+  getUserPosts,
+  deleteUserPosts,
 };
