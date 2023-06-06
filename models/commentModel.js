@@ -7,9 +7,11 @@ const commentSchema = new Schema({
     },publishDate:{
         type:Date
     }, userId:{
-        type:Number,
+        type:Schema.Types.ObjectID,
+        ref:'User'
     }, postId:{
-        type:Number
+        type:Schema.Types.ObjectID,
+        ref:'Post'
     }
 })
 

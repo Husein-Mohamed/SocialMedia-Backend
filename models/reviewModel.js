@@ -4,12 +4,15 @@ const {Schema} = mongoose
 const reviewSchema = new Schema({
     description:{
         type:String,
-    },Rate:{
-        type:Number
-    }, userId:{
+    },rate:{
         type:Number,
+        enum:[1,2,3,4,5]
+    }, userId:{
+        type:Schema.Types.ObjectId,
+        ref:'User'
     }, postId:{
-        type:Number
+        type:Schema.Types.ObjectId,
+        ref:'Post'
     }
 })
 

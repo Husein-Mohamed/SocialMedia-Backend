@@ -7,6 +7,7 @@ const verifyToken = require('../utils/VerifyToken');
 
 router.post('/register', signUpValidtion , register);
 router.post('/login', logInValidtion , login);
+
 router.post('/upload',verifyToken,uploadToMulter ,uploadPP )
 router.patch('/update' ,updateValidtion ,verifyToken,updateUser )
 router.delete('/' , verifyToken , deleteUser )

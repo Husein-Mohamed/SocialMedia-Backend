@@ -1,9 +1,18 @@
 const express = require('express');
-const {createReview, updateReview, deleteReview} = require('../controllers/reviewController')
+const {createReview, updateMyReview, deleteReview, getReviewById, getAllReviews, updateReview, deleteAllReview} = require('../controllers/reviewController')
+const verifyToken = require('../utils/VerifyToken')
+
 const router = express.Router();
 
-router.post('/', createReview)
-router.delete('/:id', updateReview)
-router.patch('/:id', deleteReview)
+//! User
+router.post('/:id',verifyToken, createReview)
+router.delete('/:id',verifyToken, deleteReview)
+router.patch('/:id',verifyToken, updateMyReview)
+router.get('/:id', verifyToken, getReviewById)
+
+//! admin
+router.patch('/Admin/:id',verifyToken, updateReview )
+router.get('/', verifyToken, getAllReviews)
+router.delete('/', verifyToken, deleteAllReview)
 
 module.exports = router

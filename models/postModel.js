@@ -1,15 +1,24 @@
-const mongoose = require('mongoose')
-const {Schema} = mongoose
+const mongoose = require("mongoose");
+const { Schema } = mongoose;
 
 const postSchema = new Schema({
-    title:{
-        type:String,
-    },publishDate:{
-        type:Date
-    }, userId:{
-        type:Number,
-    }
-})
+  title: {
+    type: String,
+  },
+  publishDate: {
+    type: Date,
+  },
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+});
 
-const Post = mongoose.model('Post', postSchema)
-module.exports = Post
+postSchema.pre("updateOne", async function () {
+  const modifiedField = this.getUpdate();
+  console.log(this);
+});
+
+const Post = mongoose.model("Post", postSchema);
+module.exports = Post;
