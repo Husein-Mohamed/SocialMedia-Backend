@@ -5,7 +5,8 @@ const reviewSchema = new Schema({
     description:{
         type:String,
     },Rate:{
-        type:Number
+        type:Number,
+        enum:[1,2,3,4,5]
     }, userId:{
         type:Number,
     }, postId:{
