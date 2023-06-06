@@ -14,6 +14,9 @@ const loginSchema = joi.object({
   email: joi.string().email().required(),
   password: joi.string().regex(strongPasswordRegex).error(stringPassswordError).required(),
 });
+const findByEmailSchema = joi.object({
+  email: joi.string().email().required(),
+  });
 const UpdateSchema = joi.object({
   email: joi.string().email(),
   userName: joi.string().min(2).max(20),
@@ -36,5 +39,10 @@ const updateValidtion =  (req , res , next )=> {
   if (error) return next (new AppError(error.message , 404) )
   next()
 };
+const findByEmailValidtion =  (req , res , next )=> {
+  const {error} =  findByEmailSchema.validate(req.body);
+  if (error) return next (new AppError(error.message , 404) )
+  next()
+};
 
-module.exports = {signUpValidtion , logInValidtion , updateValidtion}
+module.exports = {signUpValidtion , logInValidtion , updateValidtion , findByEmailValidtion}
