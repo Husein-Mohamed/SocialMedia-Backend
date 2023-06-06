@@ -4,8 +4,8 @@ const verifyToken = require('../utils/VerifyToken')
 
 const router = express.Router();
 
-router.post('/', verifyToken, createComment)
-router.patch('/', verifyToken, updateComment)
-router.delete('/', verifyToken, deleteComment)
+router.post('/:id', verifyToken, createComment)
+router.patch('/:id', verifyToken, updateComment)
+router.delete('/:id', verifyToken, deleteComment)
 
 module.exports = router
