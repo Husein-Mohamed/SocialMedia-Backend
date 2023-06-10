@@ -15,10 +15,5 @@ const postSchema = new Schema({
   },
 });
 
-postSchema.pre("updateOne", async function () {
-  const modifiedField = this.getUpdate();
-  console.log(this);
-});
-
 const Post = mongoose.model("Post", postSchema);
 module.exports = Post;

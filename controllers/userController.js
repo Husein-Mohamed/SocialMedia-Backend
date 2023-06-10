@@ -2,6 +2,7 @@ const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
 const AppError = require("../utils/AppError");
 var jwt = require("jsonwebtoken");
+const post = require("../models/postModel");
 
 const register = async (req, res, next) => {
   const user = await User.create(req.body);
@@ -17,7 +18,19 @@ const login = async (req, res, next) => {
   let passMatch = await bcrypt.compare(password, user.password);
   if (!passMatch) return next(new AppError("credentials error ", 404));
   var token = jwt.sign({ id: user._id }, process.env.SECRET_KEY_JWT);
-  res.send({ user, token: token });
+
+  const newu = await User.aggregate([
+    { $match: { _id: user._id } },
+    {
+      $lookup: {
+        from: "posts",
+        let: { id: "$_id" },
+        pipeline: [{ $match: { $expr: { $eq: ["$$id", "$userId"] } } }],
+        as: "posts",
+      },
+    },
+  ]);
+  res.send(newu);
 };
 
 const updateUser = async (req, res, next) => {
@@ -32,44 +45,50 @@ const updateUser = async (req, res, next) => {
   res.send(newUser);
 };
 
-const getAllUsers =async (req, res, next) => {
-  if (!req.Admin)
-  return next (new AppError("You are not Admin", 404) );
+const getAllUsers = async (req, res, next) => {
+  if (!req.Admin) return next(new AppError("You are not Admin", 404));
   let users = await User.find();
   res.send(users);
 };
 const deleteUser = async (req, res, next) => {
   const user = req.user;
-  await User.findByIdAndDelete({_id:user._id})
-  res.send('User deleted Successfully !!')
+  await User.findByIdAndDelete({ _id: user._id });
+  res.send("User deleted Successfully !!");
 };
 const deleteUserByEmail = async (req, res, next) => {
   const user = req.user;
-  if(!req.Admin)
-  return next (new AppError("You are not Admin", 404) ); 
-  const {email} = req.body ; 
-  await User.findOneAndDelete({email:email})
-   res.send('User deleted Successfully !!')
- };
- const getUserByEmail = async (req, res, next) => {
-  const {email} = req.body ; 
- let user =  await User.findOne({email:email})
-   res.send(user)
- };
+  if (!req.Admin) return next(new AppError("You are not Admin", 404));
+  const { email } = req.body;
+  await User.findOneAndDelete({ email: email });
+  res.send("User deleted Successfully !!");
+};
+const getUserByEmail = async (req, res, next) => {
+  const { email } = req.body;
+  let user = await User.findOne({ email: email });
+  res.send(user);
+};
 
-
-  const addUser = async (req, res, next) => {
-    const user = req.user;
-    if(!req.Admin)
-    return next (new AppError("You are not Admin", 404) ); 
+const addUser = async (req, res, next) => {
+  const user = req.user;
+  if (!req.Admin) return next(new AppError("You are not Admin", 404));
   const newUser = await User.create(req.body);
   user.passward = undefined;
   var token = jwt.sign({ id: user._id }, process.env.SECRET_KEY_JWT);
   res.send({ user, token: token });
 };
 const getUserData = async (req, res, next) => {
-  req.user.passward =undefined;
+  req.user.passward = undefined;
   res.send(req.user);
 };
 
-module.exports = { getAllUsers, register, login, updateUser , deleteUser  , getUserData , deleteUserByEmail, addUser , getUserByEmail};
+module.exports = {
+  getAllUsers,
+  register,
+  login,
+  updateUser,
+  deleteUser,
+  getUserData,
+  deleteUserByEmail,
+  addUser,
+  getUserByEmail,
+};
